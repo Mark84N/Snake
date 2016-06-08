@@ -25,6 +25,7 @@ class Field{
     void generateCherry();
     bool didGainCherry();
     void initGreeting();
+    bool didGainItself();
 
 public:
 

@@ -41,6 +41,8 @@ void Field::makeStep(DIRECTIONS d){
 
         snake.increase();
         generateCherry();
+    }else if (didGainItself()){
+
     }
 }
 //[2]
@@ -260,3 +262,10 @@ size_t Field::getCurrLevel()const{
     return millisecDelay;
 }
 //[13]
+
+//[14]
+bool Field::didGainItself(){
+
+    return false;
+}
+//[14]
