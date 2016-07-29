@@ -4,11 +4,11 @@
 #include <chrono>
 #include <thread>
 
-#include <field.h>
+#include <gamefield.h>
 
 int main(int argc, char *argv[])
 {
-    Field f;
+    GameField f;
     f.showField();
 
     while (true)
