@@ -4,13 +4,8 @@
 #include <utility>
 #include <iostream>
 
-class Point {
-
-    /* visual representation on the field */
-    char symbol;
-
-    std::pair<int,int> coordinates;
-
+class Point
+{
 public:
 
     friend std::ostream& operator<<(std::ostream& out, const Point& point);
@@ -20,19 +15,18 @@ public:
         :coordinates(0, 0), symbol('\0') { }
 
     Point(const int x, const int y, const char s)
-        : coordinates(x, y), symbol(s){ }
+        : coordinates(x, y), symbol(s) { }
 
-    inline const char getSymbol()const{
-        return symbol;
-    }
+    const char getSymbol()const;
     void setSymbol(const char s);
 
-    inline const std::pair<int, int> Point::getCoordinates() const{
-
-        return coordinates;
-    }
+    const std::pair<int, int> Point::getCoordinates() const;
     void setCoordinates(const std::pair<int, int>& x_y);
 
+private:
+
+    char symbol;
+    std::pair<int,int> coordinates;
 };
 
 #endif // POINT_H
