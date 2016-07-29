@@ -18,7 +18,9 @@ public:
     void removeSnakeFromField();
     DIRECTIONS getSnakeDirection()const;
     void showField()const;
-    void showScoreAndLevel()const;
+    void showScore()const;
+    void showLevel()const;
+
     void showGreeting()const;
     size_t getCurrLevel()const;
 

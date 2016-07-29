@@ -11,9 +11,7 @@ GameField::GameField()
         std::vector<Point>pointsLine;
 
         for (int j = 0; j < DEFAULT_FLDSIZE; ++j)
-        {
             pointsLine.emplace_back(Point(i, j, ' '));
-        }
 
         this->gameField.emplace_back(pointsLine);
         pointsLine.clear();
@@ -68,7 +66,6 @@ void GameField::locateSnakeOnField()
         std::pair<int, int> coord = point.getCoordinates();
 
         /* check if coordinates are within field and correct if not */
-
         if (setSnakeCoordWithinField(coord))
         {
             point.setCoordinates(coord);
@@ -79,9 +76,8 @@ void GameField::locateSnakeOnField()
     });
 
     if (wereCoordinatesAdjusted)
-    {
-       snake.setSnakeBody(snakePoints);
-    }
+        snake.setSnakeBody(snakePoints);
+
 }
 //[3]
 
@@ -108,9 +104,8 @@ void GameField::showField()const
     std::cout << "   ";
 
     for(int i = 0; i < DEFAULT_FLDSIZE; ++i)
-    {
         std::cout << "##";
-    }
+
     std::cout << std::endl;
 
     /* field + side borders */
@@ -119,9 +114,7 @@ void GameField::showField()const
         std::cout << "  #";
 
         for (int j = 0; j < DEFAULT_FLDSIZE; ++j)
-        {
             std::cout << gameField[i][j] << ' ';
-        }
 
          std::cout << "#" << std::endl;
     }
@@ -130,22 +123,19 @@ void GameField::showField()const
     std::cout << "   ";
 
     for(int i = 0; i < DEFAULT_FLDSIZE; ++i)
-    {
         std::cout << "##";
-    }
 
     std::cout << std::endl;
 
-    showScoreAndLevel();
+    showScore();
+    showLevel();
 }
 //[5]
 
 //[6]
-void GameField::showScoreAndLevel()const
+void GameField::showScore()const
 {
     std::cout << scoreMessage + std::to_string(scoreValue)
-              << std::endl;
-    std::cout << levelMessage + std::to_string(levelValue)
               << std::endl;
 }
 //[6]
@@ -274,5 +264,9 @@ DIRECTIONS GameField::getSnakeDirection()const
 
 
 //[15]
-
+void GameField::showLevel()const
+{
+    std::cout << levelMessage + std::to_string(levelValue)
+              << std::endl;
+}
 //[15]
