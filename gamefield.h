@@ -5,7 +5,7 @@
 #include <random>
 #include <string>
 
-const int DEFAULT_FLDSIZE = 20;
+extern const int DEFAULT_FLDSIZE;
 
 class GameField
 {
@@ -20,14 +20,12 @@ public:
     void showField()const;
     void showScore()const;
     void showLevel()const;
-
     void showGreeting()const;
     size_t getCurrLevel()const;
 
 private:
 
-    void initSnakeOnField();
-    bool setSnakeCoordWithinField(std::pair<int, int>& coord);
+    void setSnakeStartCoordinates();
     void generateCherry();
     bool didGainCherry();
     void initGreeting();
