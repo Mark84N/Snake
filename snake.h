@@ -5,21 +5,21 @@
 #include <algorithm>
 #include <point.h>
 
-const int DEFAULT_LENGTH = 5;
+const int DEFAULT_SNAKELENGTH = 5;
+extern const int DEFAULT_FLDSIZE;
 enum class DIRECTIONS{UP, DOWN, LEFT, RIGHT};
 
 class Snake
 {
 public:
 
-    Snake(const int len = DEFAULT_LENGTH);
+    Snake(const int len = DEFAULT_SNAKELENGTH);
 
     std::vector<Point> getSnakeBody()const;
     void setSnakeBody(const std::vector<Point>& source);
-
     DIRECTIONS getCurrentDirection()const;
     size_t getCurrentLength()const;
-    void makeMove(DIRECTIONS d);
+    void makeMove(DIRECTIONS newDirection);
     void increase();
     bool didGainBody()const;
 
