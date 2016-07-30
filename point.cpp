@@ -22,9 +22,8 @@ void swapPoints(Point& left, Point& right)
 void Point::setSymbol(const char s)
 {
     if (s >= 0 && s <= 255)
-    {
         this->symbol = s;
-    }
+
     else
     {
         std::cerr << "Trying to set incorrect char value to the point!\n";

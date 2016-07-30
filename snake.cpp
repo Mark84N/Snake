@@ -10,7 +10,7 @@ Snake::Snake(const int len /* = 5 by default */ )
     oppositeDirections = { {DIRECTIONS::RIGHT, DIRECTIONS::LEFT},
                            {DIRECTIONS::LEFT, DIRECTIONS::RIGHT},
                            {DIRECTIONS::UP, DIRECTIONS::DOWN},
-                           {DIRECTIONS::DOWN, DIRECTIONS::UP}};
+                           {DIRECTIONS::DOWN, DIRECTIONS::UP} };
 }
 //[1]
 
@@ -24,55 +24,45 @@ std::vector<Point> Snake::getSnakeBody()const
 //[3]
 void Snake::setSnakeBody(const std::vector<Point>& source)
 {
-    if (!source.empty()){
+    if (!source.empty())
         body = source;
-    }
 }
 //[3]
 
 //[4]
-void Snake::makeMove(DIRECTIONS d)
+void Snake::makeMove(DIRECTIONS newDirection)
 {
-    if (isOppositeDirection(d))
-        d = DEFAULT_DIRECTION;
+    if (isOppositeDirection(newDirection))
+        newDirection = DEFAULT_DIRECTION;
     else
-        DEFAULT_DIRECTION = d;
+        DEFAULT_DIRECTION = newDirection;
 
-    /* move head and remember her last position */
-    std::pair<int, int> coordinateToRepeat =
-            body[body.size() - 1].getCoordinates();
+    auto headCoordinates = body.rbegin()->getCoordinates();
+    int xHeadCoord = headCoordinates.first;
+    int yHeadCoord = headCoordinates.second;
 
-    if (d == DIRECTIONS::RIGHT)
+    auto lastHeadCoordinates = headCoordinates;
+
+    switch (newDirection)
     {
-        coordinateToRepeat.second++;
-        body[body.size() - 1].setCoordinates(coordinateToRepeat);
-        coordinateToRepeat.second--;
-    }
-    else if(d == DIRECTIONS::DOWN)
-    {
-        coordinateToRepeat.first++;
-        body[body.size() - 1].setCoordinates(coordinateToRepeat);
-        coordinateToRepeat.first--;
-    }
-    else if(d == DIRECTIONS::LEFT)
-    {
-        coordinateToRepeat.second--;
-        body[body.size() - 1].setCoordinates(coordinateToRepeat);
-        coordinateToRepeat.second++;
-    }
-    else
-    {
-        coordinateToRepeat.first--;
-        body[body.size() - 1].setCoordinates(coordinateToRepeat);
-        coordinateToRepeat.first++;
+        case DIRECTIONS::RIGHT:{ yHeadCoord = (yHeadCoord + 1 < DEFAULT_FLDSIZE ? yHeadCoord + 1 : 0); } break;
+        case DIRECTIONS::DOWN: { xHeadCoord = (xHeadCoord + 1 < DEFAULT_FLDSIZE ? xHeadCoord + 1 : 0); } break;
+        case DIRECTIONS::LEFT: { yHeadCoord = (yHeadCoord - 1 >= 0 ? yHeadCoord - 1 : DEFAULT_FLDSIZE-1); } break;
+        case DIRECTIONS::UP:   { xHeadCoord = (xHeadCoord - 1 >= 0 ? xHeadCoord - 1 : DEFAULT_FLDSIZE-1); } break;
     }
 
+    headCoordinates.first = xHeadCoord;
+    headCoordinates.second = yHeadCoord;
+
+    body.rbegin()->setCoordinates(headCoordinates);
+
+    // continuonesly swap last head coordinate with nearby element, and so on
     std::for_each(body.rbegin()+1, body.rend(),
-                  [&coordinateToRepeat](Point& point)
+                  [&lastHeadCoordinates](Point& point)
     {
         std::pair<int, int> tempCoordinates = point.getCoordinates();
-        point.setCoordinates(coordinateToRepeat);
-        coordinateToRepeat = tempCoordinates;
+        point.setCoordinates(lastHeadCoordinates);
+        lastHeadCoordinates = tempCoordinates;
     });
 }
 //[4]
@@ -82,9 +72,7 @@ void Snake::increase()
 {
     body.push_back(Point(0,0,'*'));
 
-    size_t len = body.size();
-
-    for (size_t i = len - 1; i > 0; i--)
+    for (size_t i = body.size() - 1; i > 0; i--)
         swapPoints(body[i], body[i-1]);
 }
 //[5]
@@ -141,5 +129,3 @@ size_t Snake::getCurrentLength()const
     return body.size();
 }
 //[9]
-
-

@@ -1,4 +1,7 @@
 #include "gamefield.h"
+
+const int DEFAULT_FLDSIZE = 20;
+
 //[1]
 GameField::GameField()
     :scoreValue(0), levelValue(1), millisecDelay(350),
@@ -8,16 +11,17 @@ GameField::GameField()
 {
     for(int i = 0; i < DEFAULT_FLDSIZE; ++i)
     {
-        std::vector<Point>pointsLine;
+        std::vector<Point>lineOfPointsOnField;
 
         for (int j = 0; j < DEFAULT_FLDSIZE; ++j)
-            pointsLine.emplace_back(Point(i, j, ' '));
+            lineOfPointsOnField.emplace_back(Point(i, j, ' '));
 
-        this->gameField.emplace_back(pointsLine);
-        pointsLine.clear();
+        this->gameField.emplace_back(lineOfPointsOnField);
+        lineOfPointsOnField.clear();
     }
 
-    initSnakeOnField();
+    setSnakeStartCoordinates(); // calls once: set start coordinates to snake
+    generateCherry();
     initGreeting();
 }
 //[1]
@@ -54,30 +58,15 @@ void GameField::makeStep(DIRECTIONS d)
 //[3]
 void GameField::locateSnakeOnField()
 {
-    std::vector<Point> snakePoints = snake.getSnakeBody();
-    /* move along snake points from head to tail */
+    std::vector<Point> snakeBodyPoints = snake.getSnakeBody();
 
-    bool wereCoordinatesAdjusted = false;
-
-    std::for_each(snakePoints.rbegin(),
-                  snakePoints.rend(),
-                  [this, &wereCoordinatesAdjusted](Point& point)
+    std::for_each(snakeBodyPoints.rbegin(),
+                  snakeBodyPoints.rend(),
+                  [this](Point& point)
     {
         std::pair<int, int> coord = point.getCoordinates();
-
-        /* check if coordinates are within field and correct if not */
-        if (setSnakeCoordWithinField(coord))
-        {
-            point.setCoordinates(coord);
-            wereCoordinatesAdjusted = true;
-        }
-        /* transfer snake's point(node) to the field */
         this->gameField[coord.first][coord.second] = point;
     });
-
-    if (wereCoordinatesAdjusted)
-        snake.setSnakeBody(snakePoints);
-
 }
 //[3]
 
@@ -148,7 +137,7 @@ void GameField::showGreeting()const
 //[7]
 
 //[8]
-void GameField::initSnakeOnField()
+void GameField::setSnakeStartCoordinates()
 {
     std::vector<Point> snakeBody = snake.getSnakeBody();
     int x = DEFAULT_FLDSIZE/2;
@@ -160,41 +149,10 @@ void GameField::initSnakeOnField()
     }
 
     this->snake.setSnakeBody(snakeBody);
-    generateCherry();
 }
 //[8]
 
 //[9]
-bool GameField::setSnakeCoordWithinField(std::pair<int, int>& coord)
-{
-    bool wereCoordinatesAdjusted = false;
-
-    if (coord.first == DEFAULT_FLDSIZE)
-    {
-        coord.first = 0;
-        wereCoordinatesAdjusted = true;
-    }
-    else if(coord.second == DEFAULT_FLDSIZE)
-    {
-        coord.second = 0;
-        wereCoordinatesAdjusted = true;
-    }
-    else if(coord.first == -1)
-    {
-        coord.first = DEFAULT_FLDSIZE-1;
-        wereCoordinatesAdjusted = true;
-    }
-    else if(coord.second == -1)
-    {
-        coord.second = DEFAULT_FLDSIZE-1;
-        wereCoordinatesAdjusted = true;
-    }
-
-    return wereCoordinatesAdjusted;
-}
-//[9]
-
-//[10]
 void GameField::generateCherry()
 {
     std::vector<Point> snakeBody = snake.getSnakeBody();
@@ -220,24 +178,23 @@ void GameField::generateCherry()
 
     this->gameField[xCoord][yCoord].setSymbol(3);
     cherry.setCoordinates(std::make_pair(xCoord, yCoord));
-
 }
+//[9]
+
 //[10]
-
-//[11]
-bool GameField::didGainCherry(){
-
-    auto snakeHead = (*snake.getSnakeBody().rbegin());
+bool GameField::didGainCherry()
+{
+    auto snakeHead = *(snake.getSnakeBody().rbegin());
     auto snakeHeadCoord = snakeHead.getCoordinates();
     auto cherryCoord = cherry.getCoordinates();
 
     return (snakeHeadCoord == cherryCoord);
 }
+//[10]
+
 //[11]
-
-//[12]
-void GameField::initGreeting(){
-
+void GameField::initGreeting()
+{
     greeting = (" _______  __    _  _______  ___   _  _______ \n"
                 "|       ||  |  | ||   _   ||   | | ||       |\n"
                 "|  _____||   |_| ||  |_|  ||   |_| ||    ___|\n"
@@ -246,27 +203,27 @@ void GameField::initGreeting(){
                 " _____| || | |   ||   _   ||    _  ||   |___ \n"
                 "|_______||_|  |__||__| |__||___| |_||_______|\n");
 }
+//[11]
+
+//[12]
+size_t GameField::getCurrLevel()const
+{
+    return millisecDelay;
+}
 //[12]
 
 //[13]
-size_t GameField::getCurrLevel()const{
-
-    return millisecDelay;
-}
-//[13]
-
-//[14]
 DIRECTIONS GameField::getSnakeDirection()const
 {
     return snake.getCurrentDirection();
 }
+//[13]
+
+
 //[14]
-
-
-//[15]
 void GameField::showLevel()const
 {
     std::cout << levelMessage + std::to_string(levelValue)
               << std::endl;
 }
-//[15]
+//[14]
